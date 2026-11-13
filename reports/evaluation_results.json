@@ -1,0 +1,41 @@
+{
+  "k": 10,
+  "evaluated_users": 290,
+  "warm_users": 98,
+  "cold_users": 192,
+  "results": [
+    {
+      "model": "Popularity (baseline)",
+      "precision_at_10": 0.244828,
+      "recall_at_10": 0.083109,
+      "ndcg_at_10": 0.270595,
+      "hit_rate_at_10": 0.710345,
+      "coverage": 0.043995,
+      "diversity": 0.695467,
+      "rmse": 1.029222,
+      "mae": 0.829608
+    },
+    {
+      "model": "Matrix Factorization (SVD)",
+      "precision_at_10": 0.242414,
+      "recall_at_10": 0.081487,
+      "ndcg_at_10": 0.2706,
+      "hit_rate_at_10": 0.706897,
+      "coverage": 0.177765,
+      "diversity": 0.701925,
+      "rmse": 1.023495,
+      "mae": 0.822576
+    },
+    {
+      "model": "Hybrid (MF + features)",
+      "precision_at_10": 0.243103,
+      "recall_at_10": 0.081329,
+      "ndcg_at_10": 0.270699,
+      "hit_rate_at_10": 0.717241,
+      "coverage": 0.162307,
+      "diversity": 0.638933,
+      "rmse": 1.023495,
+      "mae": 0.822576
+    }
+  ]
+}

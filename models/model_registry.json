@@ -1,0 +1,23 @@
+{
+  "popularity": {
+    "path": "models/popularity.pkl",
+    "mlflow_run_id": "a1492eafa942480b90030c6cf9d1e3df",
+    "fit_time_seconds": 0.0033
+  },
+  "matrix_factorization": {
+    "path": "models/matrix_factorization.pkl",
+    "mlflow_run_id": "86c91a4cefcf4ef986a94a4e06c5d0f2",
+    "fit_time_seconds": 0.0389,
+    "val_ndcg_n10": 0.1328025998333757,
+    "val_ndcg_n20": 0.13650922509887486,
+    "val_ndcg_n50": 0.09401667806026752,
+    "val_ndcg_n100": 0.08866604194352466,
+    "train_rmse": 0.774004028989244,
+    "svd_explained_variance": 0.4373229258885264
+  },
+  "hybrid": {
+    "path": "models/hybrid.pkl",
+    "mlflow_run_id": "be2967442a1a4a978f51e568b4f61998",
+    "fit_time_seconds": 0.0012
+  }
+}

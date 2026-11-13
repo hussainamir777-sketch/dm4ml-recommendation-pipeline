@@ -1,0 +1,127 @@
+2026-11-13 22:29:57 | INFO    | ingestion | Downloading MovieLens 100K from https://files.grouplens.org/datasets/movielens/ml-100k.zip
+2026-11-13 22:30:13 | INFO    | ingestion | Extracted 4924029 bytes to /Users/amirhussain/dm4ml/recommendation-pipeline/data/raw/ml-100k
+2026-11-13 22:30:13 | INFO    | ingestion | Read 943 users, 1682 items, 100000 interactions
+2026-11-13 22:30:13 | INFO    | ingestion | Injected 67 documented faulty records (see injected_faults_manifest.csv)
+2026-11-13 22:30:13 | INFO    | ingestion | Saved raw users        -> data/raw/users.csv (948 rows)
+2026-11-13 22:30:13 | INFO    | ingestion | Saved raw items        -> data/raw/items.csv (1684 rows)
+2026-11-13 22:30:13 | INFO    | ingestion | Saved raw interactions -> data/raw/interactions.csv (100060 rows)
+2026-11-13 22:30:13 | INFO    | ingestion | Ingestion complete: {'users': 948, 'items': 1684, 'interactions': 100060}
+2026-11-13 22:30:14 | INFO    | validation | users        total=   948 valid=   943 invalid=   5  rules={'age_out_of_range': 2, 'invalid_gender': 1, 'age_not_integer': 1, 'missing_occupation': 1, 'duplicate_user_id': 1}
+2026-11-13 22:30:14 | INFO    | validation | items        total=  1684 valid=  1682 invalid=   2  rules={'missing_title': 1, 'duplicate_item_id': 1}
+2026-11-13 22:30:14 | INFO    | validation | interactions total=100060 valid=100000 invalid=  60  rules={'rating_out_of_range': 6, 'rating_not_integer': 6, 'missing_user_id': 6, 'unknown_user_id': 6, 'unknown_item_id': 6, 'timestamp_in_future': 6, 'timestamp_before_min': 6, 'timestamp_not_integer': 6, 'exact_duplicate': 6, 'missing_rating': 6}
+2026-11-13 22:30:14 | INFO    | validation | Validation report written to reports/validation_report.md
+2026-11-13 22:32:42 | INFO    | preparation | Items with missing release date: 1 (release_year imputed with median 1995)
+2026-11-13 22:32:42 | INFO    | preparation | Duplicate user-item pairs removed (older ratings): 0
+2026-11-13 22:32:42 | INFO    | preparation | Time-based split at 1998-03-07 02:21:09+00:00 -> train=80003 rows, test=19997 rows
+2026-11-13 22:32:42 | INFO    | preparation | Test users=301 (cold-start users not seen in train: 192), cold-start items=66
+2026-11-13 22:32:42 | INFO    | transformation | User activity summary: 751 users | item popularity: 1616 items
+2026-11-13 22:32:42 | INFO    | transformation | User-item matrix (943, 1682) with 80003 ratings (density 5.04%)
+2026-11-13 22:32:42 | INFO    | transformation | Top-5 most popular training items: [{'item_id': 50, 'n_ratings': 473, 'avg_rating': 4.36}, {'item_id': 181, 'n_ratings': 423, 'avg_rating': 4.0}, {'item_id': 100, 'n_ratings': 417, 'avg_rating': 4.15}, {'item_id': 294, 'n_ratings': 396, 'avg_rating': 3.15}, {'item_id': 258, 'n_ratings': 394, 'avg_rating': 3.82}]
+2026-11-13 22:39:47 | INFO    | features | User features: (943, 32) | item features: (1682, 30) | interaction features: (80003, 5)
+2026-11-13 22:39:47 | INFO    | features | Cold-start users given segment-based genre affinity: 192
+2026-11-13 22:39:47 | INFO    | features | Example user features:
+ user_id  user_rating_count  user_avg_rating user_preferred_genre  user_days_since_last  is_cold_start_user
+       1                265         3.611321                Drama                     5                   0
+       2                 62         3.709677                Drama                     2                   0
+       3                 35         2.314286             Thriller                     0                   0
+       4                  0         3.517593                Drama                    -1                   1
+       5                175         2.874286               Comedy                   116                   0
+2026-11-13 22:39:47 | INFO    | features | Feature catalog written to reports/feature_catalog.md
+2026-11-13 22:41:51 | INFO    | training |   validation: n_factors=10   NDCG@10=0.1328 (68 warm validation users)
+2026-11-13 22:41:51 | INFO    | training |   validation: n_factors=20   NDCG@10=0.1365 (68 warm validation users)
+2026-11-13 22:41:51 | INFO    | training |   validation: n_factors=50   NDCG@10=0.0940 (68 warm validation users)
+2026-11-13 22:41:51 | INFO    | training |   validation: n_factors=100  NDCG@10=0.0887 (68 warm validation users)
+2026-11-13 22:41:51 | INFO    | training | Selected n_factors=20 (best validation NDCG@10)
+2026-11-13 22:41:53 | INFO    | training | Trained popularity             in 0.00s {} (MLflow run e55eef85)
+2026-11-13 22:41:53 | INFO    | training | Trained matrix_factorization   in 0.04s {'train_rmse': 0.774, 'svd_explained_variance': 0.4373} (MLflow run 26df83e1)
+2026-11-13 22:41:53 | INFO    | training | Trained hybrid                 in 0.00s {} (MLflow run a4cf6535)
+2026-11-13 22:41:53 | INFO    | training | Saved 3 models and models/model_registry.json
+2026-11-13 22:46:27 | INFO    | evaluation | Evaluating 290 test users with >= 1 relevant item (warm=98, cold-start=192), K=10
+2026-11-13 22:46:27 | INFO    | evaluation | Popularity (baseline)        P@10=0.2448 R@10=0.0831 NDCG@10=0.2706 Cov=0.044 Div=0.695 RMSE=1.0292 MAE=0.8296
+2026-11-13 22:46:27 | INFO    | evaluation | Matrix Factorization (SVD)   P@10=0.2424 R@10=0.0815 NDCG@10=0.2706 Cov=0.178 Div=0.702 RMSE=1.0235 MAE=0.8226
+2026-11-13 22:46:27 | INFO    | evaluation | Hybrid (MF + features)       P@10=0.2431 R@10=0.0813 NDCG@10=0.2707 Cov=0.162 Div=0.639 RMSE=1.0235 MAE=0.8226
+2026-11-13 22:46:27 | INFO    | evaluation | Results written to reports/evaluation_results.md and reports/model_comparison.png
+2026-11-13 22:47:55 | INFO    | ingestion | MovieLens already present at /Users/amirhussain/dm4ml/recommendation-pipeline/data/raw/ml-100k - skipping download
+2026-11-13 22:47:55 | INFO    | ingestion | Read 943 users, 1682 items, 100000 interactions
+2026-11-13 22:47:55 | INFO    | ingestion | Injected 67 documented faulty records (see injected_faults_manifest.csv)
+2026-11-13 22:47:55 | INFO    | ingestion | Saved raw users        -> data/raw/users.csv (948 rows)
+2026-11-13 22:47:55 | INFO    | ingestion | Saved raw items        -> data/raw/items.csv (1684 rows)
+2026-11-13 22:47:55 | INFO    | ingestion | Saved raw interactions -> data/raw/interactions.csv (100060 rows)
+2026-11-13 22:47:55 | INFO    | ingestion | Ingestion complete: {'users': 948, 'items': 1684, 'interactions': 100060}
+2026-11-13 22:47:55 | INFO    | validation | users        total=   948 valid=   943 invalid=   5  rules={'age_out_of_range': 2, 'invalid_gender': 1, 'age_not_integer': 1, 'missing_occupation': 1, 'duplicate_user_id': 1}
+2026-11-13 22:47:55 | INFO    | validation | items        total=  1684 valid=  1682 invalid=   2  rules={'missing_title': 1, 'duplicate_item_id': 1}
+2026-11-13 22:47:55 | INFO    | validation | interactions total=100060 valid=100000 invalid=  60  rules={'rating_out_of_range': 6, 'rating_not_integer': 6, 'missing_user_id': 6, 'unknown_user_id': 6, 'unknown_item_id': 6, 'timestamp_in_future': 6, 'timestamp_before_min': 6, 'timestamp_not_integer': 6, 'exact_duplicate': 6, 'missing_rating': 6}
+2026-11-13 22:47:55 | INFO    | validation | Validation report written to reports/validation_report.md
+2026-11-13 22:47:55 | INFO    | preparation | Items with missing release date: 1 (release_year imputed with median 1995)
+2026-11-13 22:47:56 | INFO    | preparation | Duplicate user-item pairs removed (older ratings): 0
+2026-11-13 22:47:56 | INFO    | preparation | Time-based split at 1998-03-07 02:21:09+00:00 -> train=80003 rows, test=19997 rows
+2026-11-13 22:47:56 | INFO    | preparation | Test users=301 (cold-start users not seen in train: 192), cold-start items=66
+2026-11-13 22:47:56 | INFO    | transformation | User activity summary: 751 users | item popularity: 1616 items
+2026-11-13 22:47:56 | INFO    | transformation | User-item matrix (943, 1682) with 80003 ratings (density 5.04%)
+2026-11-13 22:47:56 | INFO    | transformation | Top-5 most popular training items: [{'item_id': 50, 'n_ratings': 473, 'avg_rating': 4.36}, {'item_id': 181, 'n_ratings': 423, 'avg_rating': 4.0}, {'item_id': 100, 'n_ratings': 417, 'avg_rating': 4.15}, {'item_id': 294, 'n_ratings': 396, 'avg_rating': 3.15}, {'item_id': 258, 'n_ratings': 394, 'avg_rating': 3.82}]
+2026-11-13 22:47:56 | INFO    | features | User features: (943, 32) | item features: (1682, 30) | interaction features: (80003, 5)
+2026-11-13 22:47:56 | INFO    | features | Cold-start users given segment-based genre affinity: 192
+2026-11-13 22:47:56 | INFO    | features | Example user features:
+ user_id  user_rating_count  user_avg_rating user_preferred_genre  user_days_since_last  is_cold_start_user
+       1                265         3.611321                Drama                     5                   0
+       2                 62         3.709677                Drama                     2                   0
+       3                 35         2.314286             Thriller                     0                   0
+       4                  0         3.517593                Drama                    -1                   1
+       5                175         2.874286               Comedy                   116                   0
+2026-11-13 22:47:56 | INFO    | features | Feature catalog written to reports/feature_catalog.md
+2026-11-13 22:47:56 | INFO    | training |   validation: n_factors=10   NDCG@10=0.1328 (68 warm validation users)
+2026-11-13 22:47:56 | INFO    | training |   validation: n_factors=20   NDCG@10=0.1365 (68 warm validation users)
+2026-11-13 22:47:56 | INFO    | training |   validation: n_factors=50   NDCG@10=0.0940 (68 warm validation users)
+2026-11-13 22:47:56 | INFO    | training |   validation: n_factors=100  NDCG@10=0.0887 (68 warm validation users)
+2026-11-13 22:47:56 | INFO    | training | Selected n_factors=20 (best validation NDCG@10)
+2026-11-13 22:47:57 | INFO    | training | Trained popularity             in 0.00s {} (MLflow run e4da2172)
+2026-11-13 22:47:57 | INFO    | training | Trained matrix_factorization   in 0.04s {'train_rmse': 0.774, 'svd_explained_variance': 0.4373} (MLflow run fa851278)
+2026-11-13 22:47:57 | INFO    | training | Trained hybrid                 in 0.00s {} (MLflow run 3fb684bd)
+2026-11-13 22:47:57 | INFO    | training | Saved 3 models and models/model_registry.json
+2026-11-13 22:47:57 | INFO    | evaluation | Evaluating 290 test users with >= 1 relevant item (warm=98, cold-start=192), K=10
+2026-11-13 22:47:57 | INFO    | evaluation | Popularity (baseline)        P@10=0.2448 R@10=0.0831 NDCG@10=0.2706 Cov=0.044 Div=0.695 RMSE=1.0292 MAE=0.8296
+2026-11-13 22:47:57 | INFO    | evaluation | Matrix Factorization (SVD)   P@10=0.2424 R@10=0.0815 NDCG@10=0.2706 Cov=0.178 Div=0.702 RMSE=1.0235 MAE=0.8226
+2026-11-13 22:47:57 | INFO    | evaluation | Hybrid (MF + features)       P@10=0.2431 R@10=0.0813 NDCG@10=0.2707 Cov=0.162 Div=0.639 RMSE=1.0235 MAE=0.8226
+2026-11-13 22:47:57 | INFO    | evaluation | Results written to reports/evaluation_results.md and reports/model_comparison.png
+2026-11-13 22:54:01 | INFO    | ingestion | MovieLens already present at /Users/amirhussain/dm4ml/recommendation-pipeline/data/raw/ml-100k - skipping download
+2026-11-13 22:54:01 | INFO    | ingestion | Read 943 users, 1682 items, 100000 interactions
+2026-11-13 22:54:01 | INFO    | ingestion | Injected 67 documented faulty records (see injected_faults_manifest.csv)
+2026-11-13 22:54:01 | INFO    | ingestion | Saved raw users        -> data/raw/users.csv (948 rows)
+2026-11-13 22:54:01 | INFO    | ingestion | Saved raw items        -> data/raw/items.csv (1684 rows)
+2026-11-13 22:54:01 | INFO    | ingestion | Saved raw interactions -> data/raw/interactions.csv (100060 rows)
+2026-11-13 22:54:01 | INFO    | ingestion | Ingestion complete: {'users': 948, 'items': 1684, 'interactions': 100060}
+2026-11-13 22:54:01 | INFO    | validation | users        total=   948 valid=   943 invalid=   5  rules={'age_out_of_range': 2, 'invalid_gender': 1, 'age_not_integer': 1, 'missing_occupation': 1, 'duplicate_user_id': 1}
+2026-11-13 22:54:01 | INFO    | validation | items        total=  1684 valid=  1682 invalid=   2  rules={'missing_title': 1, 'duplicate_item_id': 1}
+2026-11-13 22:54:01 | INFO    | validation | interactions total=100060 valid=100000 invalid=  60  rules={'rating_out_of_range': 6, 'rating_not_integer': 6, 'missing_user_id': 6, 'unknown_user_id': 6, 'unknown_item_id': 6, 'timestamp_in_future': 6, 'timestamp_before_min': 6, 'timestamp_not_integer': 6, 'exact_duplicate': 6, 'missing_rating': 6}
+2026-11-13 22:54:01 | INFO    | validation | Validation report written to reports/validation_report.md
+2026-11-13 22:54:01 | INFO    | preparation | Items with missing release date: 1 (release_year imputed with median 1995)
+2026-11-13 22:54:01 | INFO    | preparation | Duplicate user-item pairs removed (older ratings): 0
+2026-11-13 22:54:01 | INFO    | preparation | Time-based split at 1998-03-07 02:21:09+00:00 -> train=80003 rows, test=19997 rows
+2026-11-13 22:54:01 | INFO    | preparation | Test users=301 (cold-start users not seen in train: 192), cold-start items=66
+2026-11-13 22:54:01 | INFO    | transformation | User activity summary: 751 users | item popularity: 1616 items
+2026-11-13 22:54:01 | INFO    | transformation | User-item matrix (943, 1682) with 80003 ratings (density 5.04%)
+2026-11-13 22:54:01 | INFO    | transformation | Top-5 most popular training items: [{'item_id': 50, 'n_ratings': 473, 'avg_rating': 4.36}, {'item_id': 181, 'n_ratings': 423, 'avg_rating': 4.0}, {'item_id': 100, 'n_ratings': 417, 'avg_rating': 4.15}, {'item_id': 294, 'n_ratings': 396, 'avg_rating': 3.15}, {'item_id': 258, 'n_ratings': 394, 'avg_rating': 3.82}]
+2026-11-13 22:54:02 | INFO    | features | User features: (943, 32) | item features: (1682, 30) | interaction features: (80003, 5)
+2026-11-13 22:54:02 | INFO    | features | Cold-start users given segment-based genre affinity: 192
+2026-11-13 22:54:02 | INFO    | features | Example user features:
+ user_id  user_rating_count  user_avg_rating user_preferred_genre  user_days_since_last  is_cold_start_user
+       1                265         3.611321                Drama                     5                   0
+       2                 62         3.709677                Drama                     2                   0
+       3                 35         2.314286             Thriller                     0                   0
+       4                  0         3.517593                Drama                    -1                   1
+       5                175         2.874286               Comedy                   116                   0
+2026-11-13 22:54:02 | INFO    | features | Feature catalog written to reports/feature_catalog.md
+2026-11-13 22:54:02 | INFO    | training |   validation: n_factors=10   NDCG@10=0.1328 (68 warm validation users)
+2026-11-13 22:54:02 | INFO    | training |   validation: n_factors=20   NDCG@10=0.1365 (68 warm validation users)
+2026-11-13 22:54:02 | INFO    | training |   validation: n_factors=50   NDCG@10=0.0940 (68 warm validation users)
+2026-11-13 22:54:02 | INFO    | training |   validation: n_factors=100  NDCG@10=0.0887 (68 warm validation users)
+2026-11-13 22:54:02 | INFO    | training | Selected n_factors=20 (best validation NDCG@10)
+2026-11-13 22:54:03 | INFO    | training | Trained popularity             in 0.00s {} (MLflow run a1492eaf)
+2026-11-13 22:54:03 | INFO    | training | Trained matrix_factorization   in 0.04s {'train_rmse': 0.774, 'svd_explained_variance': 0.4373} (MLflow run 86c91a4c)
+2026-11-13 22:54:03 | INFO    | training | Trained hybrid                 in 0.00s {} (MLflow run be296744)
+2026-11-13 22:54:03 | INFO    | training | Saved 3 models and models/model_registry.json
+2026-11-13 22:54:03 | INFO    | evaluation | Evaluating 290 test users with >= 1 relevant item (warm=98, cold-start=192), K=10
+2026-11-13 22:54:03 | INFO    | evaluation | Popularity (baseline)        P@10=0.2448 R@10=0.0831 NDCG@10=0.2706 Cov=0.044 Div=0.695 RMSE=1.0292 MAE=0.8296
+2026-11-13 22:54:03 | INFO    | evaluation | Matrix Factorization (SVD)   P@10=0.2424 R@10=0.0815 NDCG@10=0.2706 Cov=0.178 Div=0.702 RMSE=1.0235 MAE=0.8226
+2026-11-13 22:54:03 | INFO    | evaluation | Hybrid (MF + features)       P@10=0.2431 R@10=0.0813 NDCG@10=0.2707 Cov=0.162 Div=0.639 RMSE=1.0235 MAE=0.8226
+2026-11-13 22:54:03 | INFO    | evaluation | Results written to reports/evaluation_results.md and reports/model_comparison.png

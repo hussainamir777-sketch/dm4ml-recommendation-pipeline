@@ -1,0 +1,18 @@
+# Python / environment
+.venv/
+__pycache__/
+*.pyc
+.DS_Store
+
+# Large or regenerated data (recreated by running the pipeline)
+data/raw/*
+data/processed/*
+data/features/*
+!data/**/.gitkeep
+# keep the error datasets: they are part of the validation evidence
+!data/errors/
+
+# Models and tracking (regenerated; screenshots are in reports/)
+models/*.pkl
+mlruns/
+mlflow.db

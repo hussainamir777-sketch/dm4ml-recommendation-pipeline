@@ -1,0 +1,60 @@
+# ============================================================
+# Recommendation pipeline configuration (single source of truth)
+# Every stage reads its settings from this file.
+# ============================================================
+
+project_name: movielens-recommendation-pipeline
+seed: 42
+
+paths:
+  raw: data/raw
+  processed: data/processed
+  features: data/features
+  errors: data/errors
+  models: models
+  reports: reports
+  logs: logs
+
+ingestion:
+  # "movielens" downloads MovieLens 100K; "synthetic" generates data in the
+  # same format (useful offline). Both produce identical raw file layouts.
+  source: movielens
+  movielens_url: https://files.grouplens.org/datasets/movielens/ml-100k.zip
+  # MovieLens is already clean, so a small, documented set of corrupted
+  # records is injected to demonstrate that validation catches real problems.
+  inject_faults: true
+  n_fault_records: 60
+
+validation:
+  rating_min: 1
+  rating_max: 5
+  min_timestamp: "1995-01-01"     # anything earlier is treated as invalid
+  user_age_min: 5
+  user_age_max: 100
+  allowed_genders: ["M", "F"]
+
+preparation:
+  split_quantile: 0.80            # global time-based split: first 80% of time -> train
+
+evaluation:
+  k: 10
+  relevance_threshold: 4          # test ratings >= 4 count as relevant items
+
+models:
+  popularity:
+    min_ratings: 20               # damped popularity: items need enough ratings
+    damping: 10                   # Bayesian average prior strength
+  matrix_factorization:
+    n_factors_grid: [10, 20, 50, 100]   # candidates, chosen by validation NDCG@K
+    rating_factors: 20            # latent dimensions of the rating-prediction head
+    bias_reg: 10.0                # L2 shrinkage for user/item rating biases
+  hybrid:
+    w_mf: 0.70                    # weight of the collaborative (MF) score
+    w_genre: 0.20                 # weight of user-genre affinity (feature store)
+    w_popularity: 0.10            # weight of item popularity (feature store)
+    cold_w_genre: 0.20            # cold-start users: popularity nudged by segment genre affinity
+
+mlflow:
+  experiment_name: dm4ml-recommendation-pipeline
+  tracking_uri: sqlite:///mlflow.db   # local tracking DB; view with `mlflow ui --backend-store-uri sqlite:///mlflow.db`
+  artifact_location: mlruns           # local folder for logged artifacts

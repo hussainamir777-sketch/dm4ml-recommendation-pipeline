@@ -1,0 +1,11 @@
+# Tested with Python 3.12.16 on macOS
+pandas>=2.2
+numpy>=1.26
+scipy>=1.11
+scikit-learn>=1.4
+pyarrow>=15.0
+pyyaml>=6.0
+matplotlib>=3.8
+requests>=2.31
+mlflow>=3.0
+prefect>=3.0

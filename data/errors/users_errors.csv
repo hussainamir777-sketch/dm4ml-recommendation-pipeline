@@ -1,0 +1,6 @@
+user_id,age,gender,occupation,zip_code,error_reason
+2001,-5,M,student,12345,age_out_of_range
+2002,150,F,writer,54321,age_out_of_range
+2003,30,X,engineer,11111,invalid_gender
+2004,abc,F,,22222,age_not_integer;missing_occupation
+1,24,M,technician,85711,duplicate_user_id
